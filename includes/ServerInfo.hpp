@@ -2,12 +2,12 @@
 # define SERVERINFO_HPP
 # include <arpa/inet.h> 
 
-class ServerInfo
+class	ServerInfo
 {
 	public:
 		// server name, still don't know it's purpose
 		// for sockaddr_in
-		std::string host;
+		std::string	host;
 		int port;
 		int family;
 		struct sockaddr_in serverAddr;
@@ -25,6 +25,8 @@ class ServerInfo
 		socklen_t option_len;
 		// for listen 
 		int backlog;
+	
+	public:
 		ServerInfo();
 		ServerInfo( const ServerConfig & serverConfig );
 		ServerInfo( const ServerInfo & serverInfo );

@@ -2,7 +2,7 @@
 # define CONFIG_HPP
 # include "ServerConfig.hpp"
 
-class Config
+class	Config
 {
 	public:
 		std::vector<ServerConfig> serverConfig;

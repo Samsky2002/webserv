@@ -4,12 +4,14 @@
 # include "Config.hpp"
 # include "Server.hpp"
 
-class Http
+class	Http
 {
+	private:
+		Config		config;
+		Server		server;
+		std::string	configFile;
+
 	public:
-		Config config;
-		Server server;
-		std::string config_file;
 		Http();
 		Http( const Http & http );
 		Http & operator=( const Http & http );

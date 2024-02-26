@@ -16,7 +16,7 @@ Http & Http::operator=( const Http & http )
 	{
 		this->config = http.config;	
 		this->server = http.server;
-		this->config_file = http.config_file;
+		this->configFile = http.configFile;
 	}
 	return ( *this );
 }
@@ -29,5 +29,10 @@ Http::~Http()
 void Http::setup(const std::string & file)
 {
 	config.setup( file );
-	server.setup( config );	
+	server.setup( config );
+}
+
+void Http::launch()
+{
+	server.launch();
 }

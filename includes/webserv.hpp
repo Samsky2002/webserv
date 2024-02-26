@@ -3,9 +3,11 @@
 # include <iostream>
 # include <arpa/inet.h>
 # include <sys/socket.h>
+# include <sys/types.h>
 # include <sys/select.h>
 # include <sys/stat.h>
 # include <dirent.h>
+# include <netdb.h>
 # include <cstring>
 # include <unistd.h>
 # include <fcntl.h>
