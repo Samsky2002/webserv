@@ -3,6 +3,7 @@
 # include <vector>
 # include "Config.hpp"
 # include "Server.hpp"
+# include "Multiplexing.hpp"
 
 class	Http
 {
@@ -10,6 +11,7 @@ class	Http
 		Config		config;
 		Server		server;
 		std::string	configFile;
+		Multiplexing	multiplexer;
 
 	public:
 		Http();

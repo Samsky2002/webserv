@@ -1,10 +1,8 @@
 #include "webserv.hpp"
 
-ServerInfo::ServerInfo()
-{
-	
-}
+ServerInfo::ServerInfo() {}
 
+// we can add some file called tools for the function helper like the_inet_addr()
 // this function is implemnted with getaddrinfo that store the informations of address in struct 
 // i thinks it is good bcs hnadle a lost of cases that my bitoize operation not good for it;
 in_addr_t	ft_inet_addr(const char *ipAddrString, int family, int type)
@@ -28,11 +26,27 @@ in_addr_t	ft_inet_addr(const char *ipAddrString, int family, int type)
 	return (s_addr);
 }
 
+bool	ServerInfo::matchServer(int id) const
+{
+	return (listener == id);
+}
+
+bool	ServerInfo::is_Client_exist(int fdClient) const
+{
+	for (size_t i = 0; i < Client.size(); i++)
+	{
+		if (Client[i].get_id() == fdClient)
+			return (true);
+	}
+	return(false);
+}
+
 ServerInfo::ServerInfo( const ServerConfig & serverConfig )
 {
 	this->host = serverConfig.host;
 
 	this->port = serverConfig.port;
+	std::cout << "[" << port << "]" << std::endl;
 	this->family = AF_INET;
 	this->addrLen = sizeof( struct sockaddr );
 	memset(&serverAddr, '\0', sizeof( struct sockaddr ));
@@ -40,13 +54,14 @@ ServerInfo::ServerInfo( const ServerConfig & serverConfig )
 	this->serverAddr.sin_port = htons( this->port );
 	this->type = SOCK_STREAM;
 	// this->serverAddr.sin_addr.s_addr = ft_inet_addr("10.12.3.6", this->family, this->type);
-	this->serverAddr.sin_addr.s_addr = inet_addr(this->host.c_str());
+	// this->serverAddr.sin_addr.s_addr = ft_inet_addr(host.c_str(), family, type);
+	this->serverAddr.sin_addr.s_addr = INADDR_ANY;
 	this->domain = PF_INET;
 	this->protocol = 0;
 	this->level = SOL_SOCKET;
 	this->option_name = SO_REUSEADDR;
 	this->option_value = 1;
-	this->option_len = sizeof( int );
+	this->option_len = sizeof( option_value ); 
 	this->backlog = 20;
 
 	// to be continued
@@ -76,11 +91,61 @@ ServerInfo & ServerInfo::operator=( const ServerInfo & serverInfo )
 		this->option_value = serverInfo.option_value;
 		this->option_len = serverInfo.option_len;
 		this->backlog = serverInfo.backlog;
+		this->Client = serverInfo.Client;
 	}
 	return ( *this );
 }
 
-ServerInfo::~ServerInfo()
-{
+ServerInfo::~ServerInfo() {}
 
+void	guard(int returnValue, int listner, std::string msg)
+{
+	if (returnValue == -1)
+	{
+		std::cerr << msg << strerror(errno) << std::endl;
+		close(listner);
+		throw(1);
+	}
+}
+
+void	ServerInfo::launch()
+{
+	try{
+				//create socket;
+		listener = socket(domain, type, protocol);
+		guard(listener, listener,  "Faillue on creating Socket ");
+
+				//customizing socket ;
+		// guard(setsockopt(listener, level, option_name, &option_value, option_len), listener, "Faillue on customizing  Socket " );
+
+		setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &option_value, option_len);
+		setsockopt(listener, SOL_SOCKET, SO_REUSEPORT, &option_value, option_len);
+
+		int current_flag = fcntl(listener, F_GETFL);
+		if (current_flag == -1)
+		{
+			std::cout << " error in fcntl get flag "<< std::endl;
+			exit(1);
+		}
+		if (fcntl(listener , F_SETFL, current_flag | O_NONBLOCK) == -1)
+		{
+			perror ("error in setting non_block flag ");
+			exit(1);
+		}
+
+				//biding socket ;
+		guard(bind(listener, (const sockaddr *) &serverAddr, addrLen), listener, "Faillue on binding Socket " );
+
+				//listening to upcoming conection
+		guard(listen(listener, backlog), listener,  "Faillue on Listening " );
+
+		//add somte features like non Socketint and option to socket
+		std::cout << "We got the server " << listener << "that have the adreess " << this->host 
+		<< " and the Port " << this->port << std::endl;
+
+	}catch(int number)
+	{
+		close(listener);
+		std::cout << "Stoping Server ..." << std::endl;
+	}
 }

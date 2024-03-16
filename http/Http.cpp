@@ -35,4 +35,6 @@ void Http::setup(const std::string & file)
 void Http::launch()
 {
 	server.launch();
+	multiplexer.setup( server );
+	multiplexer.launch();
 }

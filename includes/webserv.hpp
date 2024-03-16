@@ -4,7 +4,7 @@
 # include <arpa/inet.h>
 # include <sys/socket.h>
 # include <sys/types.h>
-# include <sys/select.h>
+# include <sys/event.h>
 # include <sys/stat.h>
 # include <dirent.h>
 # include <netdb.h>
@@ -17,8 +17,10 @@
 # include <sstream>
 
 # include "Http.hpp"
+# include "Client.hpp"
 # include "Server.hpp"
 # include "ServerConfig.hpp"
 # include "Location.hpp"
+# include "Multiplexing.hpp"
 
 #endif

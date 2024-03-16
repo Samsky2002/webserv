@@ -1,6 +1,10 @@
 CPP = c++
 
-CPPFLAGS =  -Wall -Werror -Wextra -std=c++98 -fsanitize=address -g
+CPPFLAGS =  -Wall -Werror -Wextra -std=c++98 -g -fsanitize=address
+
+CLIENT = Client/Client.cpp
+
+MULTIPLEXING = Multiplexing/Multiplexing.cpp
 
 SERVER = server/Server.cpp \
 		 server/ServerInfo.cpp
@@ -11,12 +15,14 @@ CONFIG = config/Config.cpp \
 		 config/ServerConfig.cpp \
 		 config/Location.cpp \
 
-INCLUDES = -Iincludes/ 
+INCLUDES = -Iincludes/   
 
 CPPFILES = webserv.cpp \
 		   $(HTTP) \
 		   $(CONFIG) \
 		   $(SERVER) \
+		   $(MULTIPLEXING)\
+		   $(CLIENT)
 
 OBJECTS = $(CPPFILES:.cpp=.o)
 
